@@ -20,7 +20,7 @@
         <module>service-registry-1</module>
         <module>resource-server-mvc-1</module>
         <module>authorization-server-1</module>
-        <module>sso-client1</module>
+        <module>sso-client-1</module>
     </modules>
 
     <properties>
