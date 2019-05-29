@@ -52,11 +52,13 @@
         </dependency>
 
         <!-- tokenStore -->
+        <!-- 在父pom定义版本
         <dependency>
             <groupId>org.springframework.security.oauth</groupId>
             <artifactId>spring-security-oauth2</artifactId>
-            <version>2.3.2.RELEASE</version>    <!-- 解决 NoSuchMethodError.RedisConnection.set([B[B)V 的 Bug -->
+            <version>2.3.2.RELEASE</version>    &lt;!&ndash; 解决 NoSuchMethodError.RedisConnection.set([B[B)V 的 Bug &ndash;&gt;
         </dependency>
+        -->
 
         <!-- DB -->
         <dependency>

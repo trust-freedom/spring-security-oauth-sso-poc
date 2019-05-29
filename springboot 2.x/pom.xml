@@ -41,6 +41,12 @@
                 <version>${jedis.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.springframework.security.oauth</groupId>
+                <artifactId>spring-security-oauth2</artifactId>
+                <version>2.3.5.RELEASE</version>    <!-- 解决 NoSuchMethodError.RedisConnection.set([B[B)V 的 Bug 升级到 2.3.2.RELEASE -->
+            </dependency>                            <!-- 解决 github提示的安全风险升级到 2.3.5.RELEASE -->
+
         </dependencies>
     </dependencyManagement>
     
