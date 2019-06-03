@@ -1,8 +1,10 @@
-package com.freedom.security;
+package com.freedom.security.config;
 
+import com.freedom.security.logout.SsoClientNoticeLogoutSuccessHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationManager;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationProcessingFilter;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 @EnableOAuth2Sso
@@ -23,6 +27,9 @@ public class OAuthClientSecurityConfiguration extends WebSecurityConfigurerAdapt
     @Autowired
     private ResourceServerTokenServices resourceServerTokenServices;
 
+    @Autowired
+    private LogoutFilter ssoClientAutoLogoutHandler;
+
     @Override
     public void configure(HttpSecurity http) throws Exception { // @formatter:off
         http
@@ -32,7 +39,19 @@ public class OAuthClientSecurityConfiguration extends WebSecurityConfigurerAdapt
                 .anyRequest().authenticated()
                 .and()
             .addFilterAfter(oAuth2AuthenticationProcessingFilter(), AbstractPreAuthenticatedProcessingFilter.class)
-            .logout().permitAll().logoutSuccessUrl("/");
+            .logout()
+                .logoutUrl("/logout")
+                //.logoutSuccessUrl("")
+                .logoutSuccessHandler(ssoClientNoticeLogoutSuccessHandler())  // 通知 SSO Server logout
+                //.deleteCookies("")
+                .permitAll()
+                .and()
+            .addFilterBefore(ssoClientAutoLogoutHandler, LogoutFilter.class);
+    }
+
+    @Bean
+    public LogoutSuccessHandler ssoClientNoticeLogoutSuccessHandler(){
+        return new SsoClientNoticeLogoutSuccessHandler();
     }
 
     private OAuth2AuthenticationProcessingFilter oAuth2AuthenticationProcessingFilter() {

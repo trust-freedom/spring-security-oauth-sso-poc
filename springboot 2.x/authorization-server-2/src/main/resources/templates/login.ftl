@@ -12,7 +12,7 @@
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" name="password"/>
         </div>
-        <input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        <#--<input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}"/>-->
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>

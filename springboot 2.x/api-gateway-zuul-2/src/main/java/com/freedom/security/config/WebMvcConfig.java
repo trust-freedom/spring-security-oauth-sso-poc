@@ -1,4 +1,4 @@
-package com.freedom.security;
+package com.freedom.security.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;

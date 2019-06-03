@@ -1,5 +1,7 @@
-package com.freedom.config;
+package com.freedom.security.config;
 
+import com.freedom.security.logout.SsoServerNoticeLogoutSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +15,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
 @Order(SecurityProperties.BASIC_AUTH_ORDER - 6)
 @Configuration
@@ -27,6 +31,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Autowired
+    private LogoutFilter ssoServerAutoLogoutHandler;
+
+    @Bean
+    public LogoutSuccessHandler ssoServerNoticeLogoutSuccessHandler(){
+        return new SsoServerNoticeLogoutSuccessHandler();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -36,7 +48,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .formLogin()
                 .loginPage("/toLogin")
                 .loginProcessingUrl("/login")
-                .permitAll();
+                .permitAll()
+                .and()
+            .logout()
+                .logoutUrl("/logout")
+                //.logoutSuccessUrl("")
+                .logoutSuccessHandler(ssoServerNoticeLogoutSuccessHandler())
+                //.deleteCookies("")
+                .permitAll()
+                .and()
+            .csrf().disable()
+            .addFilterBefore(ssoServerAutoLogoutHandler, LogoutFilter.class); // 添加自动登出filter
     }
 
     @Bean
